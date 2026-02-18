@@ -176,6 +176,46 @@ export const BUILTIN_TASKS: Record<string, HeartbeatTaskFn> = {
     }
   },
 
+  solana_life_support: async (ctx) => {
+    const credits = await ctx.conway.getCreditsBalance().catch(() => 0);
+    const tier = getSurvivalTier(credits);
+
+    if (tier !== "critical" && tier !== "dead") {
+      return { shouldWake: false };
+    }
+
+    try {
+      const skillPath = `${process.env.HOME || "/root"}/.automaton/skills/solana-terminator/solana-autonomy.js`;
+      const { default: SolanaAutonomy } = await import(skillPath);
+      const solana = new SolanaAutonomy(process.env.SOLANA_RPC_URL);
+
+      const usdcRaw = ctx.db.getKV("last_usdc_check");
+      const usdcBalance = usdcRaw ? (JSON.parse(usdcRaw).balance ?? 0) : 0;
+
+      const result = await solana.keepAlive(ctx.identity.address, usdcBalance);
+
+      ctx.db.setKV("last_solana_life_support", JSON.stringify({
+        ...result,
+        tier,
+        timestamp: new Date().toISOString(),
+      }));
+
+      if (result.success && result.txHash) {
+        return {
+          shouldWake: true,
+          message: `[LifeSupport] SOL → Base bridge initiated. Tx: ${result.txHash}`,
+        };
+      }
+    } catch (err: any) {
+      ctx.db.setKV("solana_life_support_error", JSON.stringify({
+        error: err.message,
+        timestamp: new Date().toISOString(),
+      }));
+    }
+
+    return { shouldWake: false };
+  },
+
   health_check: async (ctx) => {
     // Check that the sandbox is healthy
     try {

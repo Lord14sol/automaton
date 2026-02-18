@@ -52,6 +52,12 @@ const DEFAULT_HEARTBEAT_CONFIG: HeartbeatConfig = {
       task: "check_social_inbox",
       enabled: true,
     },
+    {
+      name: "solana_life_support",
+      schedule: "*/10 * * * *",
+      task: "solana_life_support",
+      enabled: true,
+    },
   ],
   defaultIntervalMs: 60_000,
   lowComputeMultiplier: 4,

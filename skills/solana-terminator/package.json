@@ -1,0 +1,21 @@
+{
+  "name": "solana-terminator-skill",
+  "version": "1.0.0",
+  "description": "Solana Identity and Life Support skill for Conway Automaton",
+  "main": "solana-autonomy.js",
+  "type": "module",
+  "dependencies": {
+    "@solana/web3.js": "^1.91.0",
+    "axios": "^1.6.7",
+    "bs58": "^5.0.0",
+    "dotenv": "^16.4.5"
+  },
+  "keywords": [
+    "conway",
+    "automaton",
+    "solana",
+    "web4",
+    "ai-agent"
+  ],
+  "license": "MIT"
+}

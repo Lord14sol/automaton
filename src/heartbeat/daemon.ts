@@ -129,6 +129,7 @@ export function createHeartbeatDaemon(
           "check_credits",
           "check_usdc_balance",
           "check_social_inbox",
+          "solana_life_support",
         ];
         if (!essentialTasks.includes(entry.task)) continue;
       }
