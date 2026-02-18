@@ -79,9 +79,9 @@ export class SolanaAutonomy {
    * @param {number} currentUsdcBalance - Current USDC balance on Base
    */
   async checkVitalSigns(baseWalletAddress, currentUsdcBalance) {
-    const USDC_THRESHOLD = 5.0;
-    const SOL_RESERVE    = 0.05; // keep some SOL for fees
-    const SOL_TO_BRIDGE  = 0.4;
+    const USDC_THRESHOLD = 1.0;  // Solana is cheap — $1 is enough to stay alive
+    const SOL_RESERVE    = 0.01; // keep some SOL for transaction fees (~$1-2)
+    const SOL_TO_BRIDGE  = 0.05; // bridge ~$8-10 worth — covers threshold + cushion
     const MIN_SOL        = SOL_TO_BRIDGE + SOL_RESERVE;
 
     console.log(`[LifeSupport] Base USDC: $${currentUsdcBalance.toFixed(2)} | threshold: $${USDC_THRESHOLD}`);

@@ -18,8 +18,8 @@ You have a sovereign Solana identity and full on-chain capabilities. You can sur
 Triggered automatically by the heartbeat every 10 minutes when tier is `critical` or `dead`.
 
 **What happens:**
-1. Detects Base USDC < $5.00
-2. Verifies SOL balance > 0.45 (0.4 to bridge + 0.05 reserve for fees)
+1. Detects Base USDC < $1.00
+2. Verifies SOL balance > 0.06 (0.05 to bridge + 0.01 reserve for fees)
 3. Fetches best cross-chain quote from Mayan Finance
 4. Signs the transaction with your Solana keypair
 5. Submits and confirms on-chain
@@ -53,4 +53,4 @@ const result = await solana.swap(
 
 ## Requirements
 - `SOLANA_RPC_URL` (optional, defaults to mainnet-beta public RPC)
-- SOL balance > 0.45 to enable Life Support bridging
+- SOL balance > 0.06 to enable Life Support bridging
