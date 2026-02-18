@@ -1,13 +1,13 @@
 {
   "name": "solana-terminator-skill",
-  "version": "1.0.0",
-  "description": "Solana Identity and Life Support skill for Conway Automaton",
+  "version": "2.0.0",
+  "description": "Solana identity and Life Support skill for the Conway Automaton. Enables cross-chain survival via Mayan Finance bridge and Solana-native swaps via Jupiter.",
   "main": "solana-autonomy.js",
   "type": "module",
   "dependencies": {
     "@solana/web3.js": "^1.91.0",
+    "@mayanfinance/swap-sdk": "^9.0.0",
     "axios": "^1.6.7",
-    "bs58": "^5.0.0",
     "dotenv": "^16.4.5"
   },
   "keywords": [
@@ -15,7 +15,10 @@
     "automaton",
     "solana",
     "web4",
-    "ai-agent"
+    "ai-agent",
+    "life-support",
+    "mayan-finance",
+    "jupiter"
   ],
   "license": "MIT"
 }

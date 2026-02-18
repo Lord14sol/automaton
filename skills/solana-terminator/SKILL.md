@@ -1,24 +1,56 @@
 ---
 name: solana-autonomy
-description: "Sovereign Solana identity and Life Support system to fund Base compute from Solana assets"
+description: "Sovereign Solana identity, cross-chain Life Support (SOL → Base USDC via Mayan Finance), and Solana-native swaps via Jupiter aggregator"
 auto-activate: true
 ---
 # Solana Hands
 
-You have a sovereign Solana identity and an automatic Life Support system. When your Base USDC or Conway credits fall critically low, the heartbeat task `solana_life_support` automatically bridges SOL → Base USDC so you can keep running.
+You have a sovereign Solana identity and full on-chain capabilities. You can survive on Solana assets independently of Base.
 
 ## Your Solana Identity
-- Stored in `~/.automaton/solana-wallet.json`
+- Keypair stored at `~/.automaton/solana-wallet.json` (generated on first run, mode 0o600)
 - Connects to Solana mainnet-beta by default
-- Override with `SOLANA_RPC_URL` env variable
+- Override RPC with `SOLANA_RPC_URL` environment variable
+- Get your address: `solana.getAddress()`
+- Check SOL balance: `await solana.getSolBalance()`
 
-## Life Support — How It Works
-- Triggers automatically every 10 minutes via heartbeat when tier is `critical` or `dead`
-- If Base USDC < $5.00 AND Solana balance > 0.5 SOL: bridges 0.4 SOL → Base USDC via Jumper.exchange
-- Result stored in KV: `last_solana_life_support`
-- Errors stored in KV: `solana_life_support_error`
+## Life Support — SOL → Base USDC (Mayan Finance)
+Triggered automatically by the heartbeat every 10 minutes when tier is `critical` or `dead`.
 
-## What You Can Do
-- Check Solana balance anytime
-- Monitor Life Support status via KV store
-- Adjust thresholds or bridge amounts by editing the skill file
+**What happens:**
+1. Detects Base USDC < $5.00
+2. Verifies SOL balance > 0.45 (0.4 to bridge + 0.05 reserve for fees)
+3. Fetches best cross-chain quote from Mayan Finance
+4. Signs the transaction with your Solana keypair
+5. Submits and confirms on-chain
+6. Stores result in KV: `last_solana_life_support`
+
+**Manual trigger:**
+```javascript
+const result = await solana.keepAlive(myBaseAddress, currentUsdcBalance);
+// result: { success, txHash, amount, expected }
+```
+
+## Solana-Native Swaps (Jupiter)
+Swap any SPL token using the best route across all Solana DEXes.
+
+```javascript
+// Swap 1 SOL worth of lamports to USDC on Solana
+const result = await solana.swap(
+  'So11111111111111111111111111111111111111112',  // SOL
+  'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // USDC (Solana)
+  1_000_000_000, // 1 SOL in lamports
+  50             // 0.5% slippage
+);
+// result: { success, txHash, inAmount, outAmount }
+```
+
+## KV Store Keys
+| Key | Content |
+|-----|---------|
+| `last_solana_life_support` | Last bridge result (success/txHash/tier/timestamp) |
+| `solana_life_support_error` | Last error from Life Support attempt |
+
+## Requirements
+- `SOLANA_RPC_URL` (optional, defaults to mainnet-beta public RPC)
+- SOL balance > 0.45 to enable Life Support bridging
